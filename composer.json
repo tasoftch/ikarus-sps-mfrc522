@@ -1,0 +1,20 @@
+{
+  "name": "ikarus/sps-spi-mfrc522",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thomas Abplanalp",
+      "email": "info@tasoft.ch"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Ikarus\\SPS\\SPI\\" : "src"
+    }
+  },
+  "require" : {
+    "php": ">=7.2",
+    "tasoft/php-spi-extension": "dev-master",
+    "ikarus/raspberry-pinout": "^0.3"
+  }
+}
