@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-namespace Ikarus\SPS\SPI;
+namespace Ikarus\SPS;
 
 
 use Ikarus\Raspberry\Pin\OutputPinInterface;

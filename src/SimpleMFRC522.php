@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-namespace Ikarus\SPS\SPI;
+namespace Ikarus\SPS;
 
 
 class SimpleMFRC522 extends BasicMFRC522

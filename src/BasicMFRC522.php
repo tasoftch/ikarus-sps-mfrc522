@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-namespace Ikarus\SPS\SPI;
+namespace Ikarus\SPS;
 
 
 abstract class BasicMFRC522 extends AbstractMFRC522
@@ -39,7 +39,7 @@ abstract class BasicMFRC522 extends AbstractMFRC522
 	public function anticoll() {
 		$this->_write(self::BitFramingReg, 0x0);
 
-		list($status, $data, $bits) = $this->_sendToCard(self::PCD_TRANSCEIVE, [ self::PICC_ANTICOLL, 0x20 ]);
+		list($status, $data) = $this->_sendToCard(self::PCD_TRANSCEIVE, [ self::PICC_ANTICOLL, 0x20 ]);
 
 		if($status == self::MI_OK) {
 			if(count($data) == 5) {

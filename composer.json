@@ -9,12 +9,13 @@
   ],
   "autoload": {
     "psr-4": {
-      "Ikarus\\SPS\\SPI\\" : "src"
+      "Ikarus\\SPS\\" : "src"
     }
   },
   "require" : {
     "php": ">=7.2",
-    "tasoft/php-spi-extension": "dev-master",
+    "tasoft/php-spi-extension": "^0.8",
+    "tasoft/php-secure-int64-extension": "^0.8",
     "ikarus/raspberry-pinout": "^0.3"
   }
 }
