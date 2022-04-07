@@ -102,4 +102,53 @@ if($id) {
 
 ```
 
-Changing
+Changing the access keys and access bits:
+
+```php
+<?php
+use Ikarus\MiFare\Authentication\AccessBits;
+use Ikarus\MiFare\Authentication\AuthenticationContainer;
+use Ikarus\MiFare\Authentication\BasicAuthentication;
+use Ikarus\MiFare\Joyit\MFRC522_SPI;
+use Ikarus\MiFare\Sector\CardSector;
+use Ikarus\Raspberry\Pinout\Revision_3\DynamicBCMPinout;
+use Ikarus\Raspberry\RaspberryPiDevice;
+use TASoft\Bus\SPI;
+
+$dev = RaspberryPiDevice::getDevice();
+$dev->requirePinout(
+	(new DynamicBCMPinout())
+		->addOutputPin(25)
+);
+
+$reset = $dev->getOutputPin(25);
+
+$sensor = new MFRC522_SPI(new SPI(0, 0, 1000000), $reset);
+echo "Please hold a card or badge near the sensor.", PHP_EOL;
+
+$id = $sensor->readCardID(3); // Wait for 3 seconds before cancel.
+echo "TAG: $id", PHP_EOL;
+
+if($id) {
+	$auth = new AuthenticationContainer(
+		[
+			BasicAuthentication::A([0x86,0x86,0x86,0x86,0x86,0x86]),
+			BasicAuthentication::B([0xFF, 0x1, 0x2, 0x3, 0x4, 0x5])
+		],
+		new AccessBits([
+		    AccessBits::C000, // Data Block 0
+		    AccessBits::C000, // Data Block 1
+		    AccessBits::C000, // Data Block 2
+		    AccessBits::C001, // Trailer Block
+		    0x0               // custom data byte
+        ])
+	);
+
+	$sensor->writeAuthentication(
+		$id,
+		$auth,
+		new CardSector(CardSector::SECTOR_ID_02, "", BasicAuthentication::A([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]))
+	);
+} else
+	echo "No tag detected.", PHP_EOL;
+```
