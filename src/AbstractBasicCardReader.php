@@ -24,10 +24,12 @@
 namespace Ikarus\MiFare;
 
 
+use Ikarus\MiFare\Authentication\AccessBits;
 use Ikarus\MiFare\Authentication\AuthenticationContainer;
 use Ikarus\MiFare\Authentication\AuthenticationContainerInterface;
 use Ikarus\MiFare\Authentication\AuthenticationInterface;
 use Ikarus\MiFare\Authentication\BasicAuthentication;
+use Ikarus\MiFare\Authentication\WriteonlyAuthentication;
 use Ikarus\MiFare\Sector\MutableSectorInterface;
 use Ikarus\MiFare\Sector\SectorInterface;
 use Ikarus\MiFare\UID\AbstractCardID;
@@ -191,10 +193,12 @@ abstract class AbstractBasicCardReader implements CardReaderInterface
 			$B = array_slice($block, 10, 6);
 			$bits = array_slice($block, 6, 4);
 
-			// TODO: Resolve access bits
+
+
 			return new AuthenticationContainer([
-				BasicAuthentication::A($A),
-				BasicAuthentication::B($B)
+				WriteonlyAuthentication::A($A),
+				BasicAuthentication::B($B),
+				new AccessBits($bits)
 			]);
 		}
 		return NULL;
@@ -208,7 +212,7 @@ abstract class AbstractBasicCardReader implements CardReaderInterface
 			$data = array_merge(
 				[],
 				$authenticationContainer->getAuthentication( AuthenticationInterface::AUTH_TYPE_A )->getKey(),
-				$authenticationContainer->getAccessBits(),
+				$authenticationContainer->getAccessBits()->getAccessBits(),
 				$authenticationContainer->getAuthentication( AuthenticationInterface::AUTH_TYPE_B )->getKey()
 			);
 

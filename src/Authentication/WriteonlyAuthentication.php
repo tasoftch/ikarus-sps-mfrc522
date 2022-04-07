@@ -24,68 +24,12 @@
 namespace Ikarus\MiFare\Authentication;
 
 
-class BasicAuthentication implements AuthenticationInterface
+class WriteonlyAuthentication extends BasicAuthentication
 {
-	protected $authType;
-	protected $authKey;
-
-	/**
-	 * BasicAuthentication constructor.
-	 * @param $authType
-	 * @param $authKey
-	 */
-	public function __construct($authType = self::AUTH_TYPE_A, $authKey = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
-	{
-		$this->authType = $authType;
-		$this->authKey = $authKey;
-	}
-
-	/**
-	 * @param array $key
-	 * @return static
-	 */
-	public static function A(array $key) {
-		return new static(static::AUTH_TYPE_A, $key);
-	}
-
-	/**
-	 * @param array $key
-	 * @return static
-	 */
-	public static function B(array $key) {
-		return new static(static::AUTH_TYPE_B, $key);
-	}
-
-	/**
-	 * @return static
-	 */
-	public static function defaultAuthentication() {
-		return new static();
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getAuthenticationType(): int
-	{
-		return $this->authType;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getKey(): array
-	{
-		return $this->authKey;
-	}
-
 	public function __debugInfo()
 	{
-		list($k0,$k1,$k2,$k3,$k4,$k5) = $this->getKey();
-
-		return [
-			"KEY" => sprintf("0x%X 0x%X 0x%X 0x%X 0x%X 0x%X", $k0, $k1, $k2, $k3, $k4, $k5)
-		];
+		$d = parent::__debugInfo();
+		$d["KEY"] = 'WRITEONLY';
+		return $d;
 	}
 }

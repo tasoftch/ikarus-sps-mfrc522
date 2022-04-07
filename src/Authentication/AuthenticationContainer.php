@@ -28,17 +28,15 @@ use Ikarus\MiFare\Exception\IncompleteAuthContainerException;
 
 class AuthenticationContainer implements AuthenticationContainerInterface
 {
-	private $authentications = [];
-	private $accessBits = [0x0, 0x0, 0x0, 0x4];
-
-	public $userByte = 0x0;
+	protected $authentications = [];
+	protected $accessBits;
 
 	/**
 	 * AuthenticationContainer constructor.
 	 * @param array $authentications
-	 * @param int[] $accessBits
+	 * @param AccessBits $accessBits
 	 */
-	public function __construct(array $authentications, array $accessBits = NULL)
+	public function __construct(array $authentications, AccessBits $accessBits = NULL)
 	{
 		foreach($authentications as $authentication) {
 			if($authentication instanceof AuthenticationInterface) {
@@ -49,10 +47,8 @@ class AuthenticationContainer implements AuthenticationContainerInterface
 		if(!$this->authentications[ AuthenticationInterface::AUTH_TYPE_A ] || !$this->authentications[ AuthenticationInterface::AUTH_TYPE_B ])
 			throw (new IncompleteAuthContainerException("Container must have a keyA and keyB authentication"));
 
-		if(is_array($accessBits) && count($accessBits) == 4)
-			$this->accessBits = $accessBits;
+		$this->accessBits = $accessBits ?: new AccessBits();
 	}
-
 
 	/**
 	 * @inheritDoc
@@ -65,36 +61,8 @@ class AuthenticationContainer implements AuthenticationContainerInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function getAccessBits(): array
+	public function getAccessBits(): AccessBits
 	{
-		list($access0, $access1, $access2, $access3) = $this->accessBits;
-		return [
-			((~$access3 & 0x2) << 6) | ((~$access2 & 0x2) << 5) | ((~$access1 & 0x2) << 4) | ((~$access0 & 0x2) << 3) |
-			((~$access3 & 0x1) << 3) | ((~$access2 & 0x1) << 2) | ((~$access1 & 0x1) << 1) | ((~$access0 & 0x1) << 0),
-			(($access3 & 0x1) << 7) | (($access2 & 0x1) << 6) | (($access1 & 0x1) << 5) | (($access0 & 0x1) << 4) |
-			((~$access3 & 0x4) << 1) | ((~$access2 & 0x4) << 0) | ((~$access1 & 0x4) >> 1) | ((~$access0 & 0x4) >>2),
-			(($access3 & 0x4) << 5) | (($access2 & 0x4) << 4) | (($access1 & 0x4) << 3) | (($access0 & 0x4) << 2) |
-			(($access3 & 0x2) << 2) | (($access2 & 0x2) << 1) | (($access1 & 0x2)) | (($access0 & 0x2) >> 1),
-			$this->userByte & 0xFF
-		];
-	}
-
-	/**
-	 * Use the self::DB_ACCESS_* constants to grant access to a data block.
-	 *
-	 * @param int $access
-	 * @param int $block
-	 */
-	public function setDataBlockAccess(int $access, int $block) {
-		$this->accessBits[$block % 3] = $access;
-	}
-
-	/**
-	 * Use the self::DT_ACCESS_* constants to grant access to the trailer block.
-	 *
-	 * @param int $access
-	 */
-	public function setTrailerBlockAccess(int $access) {
-		$this->accessBits[3] = $access;
+		return $this->accessBits;
 	}
 }

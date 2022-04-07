@@ -69,7 +69,7 @@ $reset = $dev->getOutputPin(25);
 
 // Read from command line
 $string = readline("Please enter a text: ");
-$string = substr(trim($string), 0, 48); // Truncate to maximum block size
+$string = substr(trim($string), 0, 48); // Truncate to maximum sector size
 echo "TEXT ($string)", PHP_EOL;
 
 $sensor = new MFRC522_SPI(new SPI(0, 0, 1000000), $reset);
@@ -101,3 +101,5 @@ if($id) {
 	echo "No tag detected.", PHP_EOL;
 
 ```
+
+Changing
