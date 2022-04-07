@@ -9,7 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Ikarus\\SPS\\" : "src"
+      "Ikarus\\MiFare\\" : "src"
     }
   },
   "require" : {
